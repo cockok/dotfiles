@@ -33,6 +33,12 @@ xterm*|rxvt*|putty*|screen*)
   ;;
 esac
 
+# for homebrew
+if [ `uname` = "Darwin" ]; then
+    PATH=`echo $PATH | sed -e "s/:\/usr\/local\/bin//"`
+    export PATH="/usr/local/bin:$PATH"
+fi
+
 ## set PATH so it includes user's private bin if it exists
 #if [ -d ~/pear ] ; then
 #    export PATH="~/pear:$PATH"
