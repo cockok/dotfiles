@@ -58,7 +58,7 @@ export LSCOLORS=ExFxCxDxBxegedabagacad
 
 # for ruby
 if [ -d ~/.rbenv ] ; then
-    export PATH="$HOME/.rbenv/bin:$PATH"
+    export PATH="$HOME/.rbenv/shims:$PATH"
     eval "$(rbenv init -)"
 fi
 
