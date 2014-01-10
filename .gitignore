@@ -1,4 +1,5 @@
-vim/bundle/*
+.vim/bundle/*
+
 ### vim ###
 .*.s[a-w][a-z]
 *.un~
