@@ -8,6 +8,7 @@ call neobundle#rc(expand('~/.vim/bundle/'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'elzr/vim-json'
 NeoBundle 'msanders/snipmate.vim'
+NeoBundle 'Shougo/unite.vim'
 
 let g:neocomplcache_enable_at_startup = 1
 let g:zencoding_debug = 1
