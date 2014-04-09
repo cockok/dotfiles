@@ -66,3 +66,10 @@ fi
 if [ -d /Developer/android-sdk-mac_x86/platform-tools ] ; then
     export PATH=/Developer/android-sdk-mac_x86/platform-tools:$PATH
 fi
+
+# for go lang
+if [ -x "`which go`" ]; then
+    export GOROOT=`go env GOROOT`
+    export GOPATH=$HOME/go
+    export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+fi

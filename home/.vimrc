@@ -10,6 +10,11 @@ NeoBundle 'elzr/vim-json'
 NeoBundle 'msanders/snipmate.vim'
 NeoBundle 'Shougo/unite.vim'
 
+" go lang settings
+if $GOROOT != ''
+    set rtp+=$GOROOT/misc/vim
+endif
+
 let g:neocomplcache_enable_at_startup = 1
 let g:zencoding_debug = 1
 let g:user_zen_expandabbr_key = '<c-o>'
