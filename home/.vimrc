@@ -126,6 +126,8 @@ set backspace=indent,eol,start
 set showmatch
 " コマンドライン補完するときに強化されたものを使う(参照 :help wildmenu)
 set wildmenu
+" いい感じに補完する
+set wildmode=list:longest
 " テキスト挿入中の自動折り返しを日本語に対応させる
 set formatoptions+=mM
 
