@@ -13,6 +13,7 @@ function share_history {
 PROMPT_COMMAND='share_history'
 shopt -u histappend
 export HISTSIZE=50000
+export HISTIGNORE=ls*:fg*:bg*:history*
 
 if [ -f $HOME/.git-completion.bash ]; then
     source $HOME/.git-completion.bash
@@ -63,13 +64,25 @@ if [ -d ~/.rbenv ] ; then
 fi
 
 # for mac android
-if [ -d /Developer/android-sdk-mac_x86/platform-tools ] ; then
-    export PATH=/Developer/android-sdk-mac_x86/platform-tools:$PATH
-fi
+#if [ -d /Developer/android-sdk-mac_x86/platform-tools ] ; then
+#    export PATH=/Developer/android-sdk-mac_x86/platform-tools:$PATH
+#fi
 
 # for go lang
 if [ -x "`which go`" ]; then
     export GOROOT=`go env GOROOT`
     export GOPATH=$HOME/go
     export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+fi
+
+if [ -x "`which adb`"]; then
+    export PATH=$PATH:~/Development/adt-bundle-mac-x86_64-20140702/sdk/platform-tools
+    #export PATH=$PATH:/Applications/Android\ Studio.app/sdk/platform-tools
+fi
+
+# The next line updates PATH for the Google Cloud SDK.
+# The next line enables bash completion for gcloud.
+if [ -d ~/google-cloud-sdk ] ; then
+    source '~/google-cloud-sdk/path.bash.inc'
+    source '~/google-cloud-sdk/completion.bash.inc'
 fi
