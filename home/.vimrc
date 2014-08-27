@@ -5,19 +5,41 @@ endif
 
 call neobundle#rc(expand('~/.vim/bundle/'))
 
+let g:gista#github_user = 'cockok'
+
 NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'elzr/vim-json'
 NeoBundle 'msanders/snipmate.vim'
-NeoBundle 'Shougo/unite.vim'
-
-" go lang settings
-if $GOROOT != ''
-    set rtp+=$GOROOT/misc/vim
-endif
+"NeoBundle 'Shougo/unite.vim'
+NeoBundleLazy 'lambdalisue/vim-gista', {
+    \ 'depends': [
+    \    'Shougo/unite.vim',
+    \    'tyru/open-browser.vim',
+    \ ],
+    \ 'autoload': {
+    \    'commands': ['Gista'],
+    \    'mappings': '<Plug>(gista-',
+    \    'unite_sources': 'gista',
+    \}}
+NeoBundle 'Shougo/unite-outline'
+NeoBundle 'Blackrush/vim-gocode'
+"NeoBundleLazy 'Blackrush/vim-gocode', {"autoload": {"filetypes": ['go']}}
+NeoBundle 'dgryski/vim-godef'
+NeoBundle 'majutsushi/tagbar'
+NeoBundle 'Shougo/vimfiler'
+NeoBundle 'Shougo/vimproc.vim', {
+      \ 'build' : {
+      \     'windows' : 'tools\\update-dll-mingw',
+      \     'cygwin' : 'make -f make_cygwin.mak',
+      \     'mac' : 'make -f make_mac.mak',
+      \     'unix' : 'make -f make_unix.mak',
+      \    },
+      \ }
 
 let g:neocomplcache_enable_at_startup = 1
 let g:zencoding_debug = 1
 let g:user_zen_expandabbr_key = '<c-o>'
+
 "---------------------------------------------------------------------------
 " 文字コード改行コードに関する設定:
 "
@@ -345,6 +367,18 @@ function! RubyLint()
 endfunction
 au FileType ruby :nn <C-C> <ESC>:call RubyLint()<CR>
 
+" go lang settings
+"if $GOROOT != ''
+"    set rtp+=$GOROOT/misc/vim
+"endif
+set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
+set rtp+=$GOPATH/src/github.com/nsf/gocode/vim
+autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
+"function! GoLint()
+"      let result = system()
+"endfunction
+"au FileType go :nn <C-C> <ESC>:call GoLint()<CR>
+
 " perl settings
 au FileType perl set ts=2 sw=2 sts=2 expandtab
 " 実行 <C-X>
@@ -413,6 +447,7 @@ au FileType xml set omnifunc=xmlcomplete#CompleteTags
 " css settings
 au FileType css set omnifunc=csscomplete#CompleteCSS
 
+" json
 command! -nargs=? Jq call s:Jq(<f-args>)
 function! s:Jq(...)
   if 0 == a:0
@@ -425,3 +460,39 @@ endfunction
 
 filetype plugin indent on
 NeoBundleCheck
+" for golang {{{
+set path+=$GOPATH/src/**
+let g:gofmt_command = 'goimports'
+"au BufWritePre *.go Fmt
+au BufNewFile,BufRead *.go set sw=4 noexpandtab ts=4 completeopt=menu,preview
+au FileType go compiler go
+" }}}
+
+" VimFilerTree {{{
+command! VimFilerTree call VimFilerTree()
+function VimFilerTree()
+  exec ':VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle -no-quit'
+  wincmd t
+  setl winfixwidth
+endfunction
+autocmd! FileType vimfiler call g:my_vimfiler_settings()
+function! g:my_vimfiler_settings()
+  nmap     <buffer><expr><CR> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)", "\<Plug>(vimfiler_edit_file)")
+  nnoremap <buffer>s          :call vimfiler#mappings#do_action('my_split')<CR>
+  nnoremap <buffer>v          :call vimfiler#mappings#do_action('my_vsplit')<CR>
+endfunction
+
+let my_action = {'is_selectable' : 1}
+function! my_action.func(candidates)
+  wincmd p
+  exec 'split '. a:candidates[0].action__path
+endfunction
+call unite#custom_action('file', 'my_split', my_action)
+
+let my_action = {'is_selectable' : 1}
+function! my_action.func(candidates)
+  wincmd p
+  exec 'vsplit '. a:candidates[0].action__path
+endfunction
+call unite#custom_action('file', 'my_vsplit', my_action)
+" }}}

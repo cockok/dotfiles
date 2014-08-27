@@ -1,0 +1,25 @@
+[user]
+	name = cockok
+	email = cockok@cheki.net
+[color]
+	ui = auto
+[core]
+	editor = vim
+[github]
+	user = cockok
+	email = cockok@cheki.net
+[alias]
+	ci = commit -a
+	st = status
+	tree = log --graph --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
+	tr = log --graph --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
+	l = log --abbrev-commit
+	diffff = diff --word-diff
+	delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
+	delete-merged-remote-branches = fetch --prune
+[push]
+	default = simple
+[http]
+	postBuffer = 104857600
+[include]
+	path = .gitconfig.private
