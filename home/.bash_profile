@@ -5,6 +5,11 @@ fi
 
 [ -f ~/.bash_completion ] && source ~/.bash_completion
 
+if [ -f $(brew --prefix)/etc/bash_completion ]; then
+    . $(brew --prefix)/etc/bash_completion
+fi
+GIT_PS1_SHOWDIRTYSTATE=true
+
 function share_history {
     history -a
     history -c
@@ -13,15 +18,15 @@ function share_history {
 PROMPT_COMMAND='share_history'
 shopt -u histappend
 export HISTSIZE=50000
+export HISTIGNORE=ls*:fg*:bg*:history*
 
-if [ -f $HOME/.git-completion.bash ]; then
-    source $HOME/.git-completion.bash
-fi
-
-if [ -f $HOME/.git-prompt.sh ]; then
-    source $HOME/.git-prompt.sh
-fi
-GIT_PS1_SHOWDIRTYSTATE=true
+#if [ -f $HOME/.git-completion.bash ]; then
+#    source $HOME/.git-completion.bash
+#fi
+#
+#if [ -f $HOME/.git-prompt.sh ]; then
+#    source $HOME/.git-prompt.sh
+#fi
 
 # User specific aliases and functions
 case "$TERM" in
@@ -37,6 +42,8 @@ esac
 if [ `uname` = "Darwin" ]; then
     PATH=`echo $PATH | sed -e "s/:\/usr\/local\/bin//"`
     export PATH="/usr/local/bin:$PATH"
+    export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
+    export MANPATH="/usr/local/opt/gnu-sed/libexec/gnuman:$MANPATH"
 fi
 
 ## set PATH so it includes user's private bin if it exists
@@ -63,13 +70,26 @@ if [ -d ~/.rbenv ] ; then
 fi
 
 # for mac android
-if [ -d /Developer/android-sdk-mac_x86/platform-tools ] ; then
-    export PATH=/Developer/android-sdk-mac_x86/platform-tools:$PATH
-fi
+#if [ -d /Developer/android-sdk-mac_x86/platform-tools ] ; then
+#    export PATH=/Developer/android-sdk-mac_x86/platform-tools:$PATH
+#fi
 
 # for go lang
 if [ -x "`which go`" ]; then
     export GOROOT=`go env GOROOT`
     export GOPATH=$HOME/go
     export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+fi
+
+if [ -x "`which adb`" ]; then
+    export PATH=$PATH:~/Development/adt-bundle-mac-x86_64-20140702/sdk/platform-tools
+    #export PATH=$PATH:/Applications/Android\ Studio.app/sdk/platform-tools
+fi
+
+# for google-cloud-platform
+if [ -d ~/google-cloud-sdk ] ; then
+    # The next line updates PATH for the Google Cloud SDK.
+    source "$HOME/google-cloud-sdk/path.bash.inc"
+    # The next line enables bash completion for gcloud.
+    source "$HOME/google-cloud-sdk/completion.bash.inc"
 fi

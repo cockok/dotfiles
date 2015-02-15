@@ -1,4 +1,5 @@
 .vim/bundle/*
+.gitconfig.private
 
 ### vim ###
 .*.s[a-w][a-z]
