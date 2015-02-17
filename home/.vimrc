@@ -1,11 +1,12 @@
+" Note: Skip initialization for vim-tiny or vim-small.
+if !1 | finish | endif
 if has('vim_starting')
-  set nocompatible               " Be iMproved
+  if &compatible
+    set nocompatible               " Be iMproved
+  endif
   set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
-
-call neobundle#rc(expand('~/.vim/bundle/'))
-
-let g:gista#github_user = 'cockok'
+call neobundle#begin(expand('~/.vim/bundle/'))
 
 NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'elzr/vim-json'
@@ -36,6 +37,9 @@ NeoBundle 'Shougo/vimproc.vim', {
       \    },
       \ }
 
+call neobundle#end()
+
+let g:gista#github_user = 'cockok'
 let g:neocomplcache_enable_at_startup = 1
 let g:zencoding_debug = 1
 let g:user_zen_expandabbr_key = '<c-o>'
