@@ -13,6 +13,7 @@ let g:gista#github_user = 'cockok'
 NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'elzr/vim-json'
 NeoBundle 'msanders/snipmate.vim'
+NeoBundle 'kchmck/vim-coffee-script'
 "NeoBundle 'Shougo/unite.vim'
 NeoBundleLazy 'lambdalisue/vim-gista', {
     \ 'depends': [
@@ -25,11 +26,10 @@ NeoBundleLazy 'lambdalisue/vim-gista', {
     \    'unite_sources': 'gista',
     \}}
 NeoBundle 'Shougo/unite-outline'
-NeoBundle 'Blackrush/vim-gocode'
+"NeoBundle 'Blackrush/vim-gocode'
 "NeoBundleLazy 'Blackrush/vim-gocode', {"autoload": {"filetypes": ['go']}}
-NeoBundle 'dgryski/vim-godef'
+"NeoBundle 'dgryski/vim-godef'
 NeoBundle 'majutsushi/tagbar'
-NeoBundle 'Shougo/vimfiler'
 NeoBundle 'Shougo/vimproc.vim', {
       \ 'build' : {
       \     'windows' : 'tools\\update-dll-mingw',
@@ -38,6 +38,7 @@ NeoBundle 'Shougo/vimproc.vim', {
       \     'unix' : 'make -f make_unix.mak',
       \    },
       \ }
+NeoBundle 'Shougo/vimfiler'
 
 call neobundle#end()
 
@@ -374,9 +375,6 @@ endfunction
 au FileType ruby :nn <C-C> <ESC>:call RubyLint()<CR>
 
 " go lang settings
-"if $GOROOT != ''
-"    set rtp+=$GOROOT/misc/vim
-"endif
 set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
 set rtp+=$GOPATH/src/github.com/nsf/gocode/vim
 autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
@@ -418,7 +416,7 @@ au Syntax vim set ts=2 st=2 sts=2
 au Syntax yaml set ts=2 st=2 sts=2
 
 " python settings
-au Syntax python set ts=2 st=2 sts=2
+au Syntax python set ts=2 st=2 sts=2 noexpandtab
 au FileType python set omnifunc=pythoncomplete#Complete
 " 実行 <C-X>
 function! PythonExec()
@@ -426,6 +424,16 @@ function! PythonExec()
   echo result
 endfunction
 au FileType python :nn <C-X> <ESC>:call PythonExec()<CR>
+
+" coffee settings
+" インデント設定
+autocmd FileType coffee setlocal sw=2 sts=2 ts=2 et
+"保存と同時にコンパイルする
+autocmd BufWritePost *.coffee silent make! 
+"エラーがあったら別ウィンドウで表示
+autocmd QuickFixCmdPost * nested cwindow | redraw! 
+" Ctrl-cで右ウィンドウにコンパイル結果を一時表示する
+nnoremap <silent> <C-C> :CoffeeCompile vert <CR><C-w>h
 
 " html settings
 au Syntax html,xhtml set ts=2 st=2 sts=2
@@ -464,41 +472,43 @@ function! s:Jq(...)
   execute "%! jq \"" . l:arg . "\""
 endfunction
 
+"" for golang {{{
+"set path+=$GOPATH/src/**
+"let g:gofmt_command = 'goimports'
+""au BufWritePre *.go Fmt
+"au BufNewFile,BufRead *.go set sw=4 noexpandtab ts=4 completeopt=menu,preview
+"au FileType go compiler go
+"" }}}
+"
+"" VimFilerTree {{{
+"command! VimFilerTree call VimFilerTree()
+"function VimFilerTree()
+"  exec ':VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle -no-quit'
+"  wincmd t
+"  setl winfixwidth
+"endfunction
+"autocmd! FileType vimfiler call g:my_vimfiler_settings()
+"function! g:my_vimfiler_settings()
+"  nmap     <buffer><expr><CR> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)", "\<Plug>(vimfiler_edit_file)")
+"  nnoremap <buffer>s          :call vimfiler#mappings#do_action('my_split')<CR>
+"  nnoremap <buffer>v          :call vimfiler#mappings#do_action('my_vsplit')<CR>
+"endfunction
+"
+"let my_action = {'is_selectable' : 1}
+"function! my_action.func(candidates)
+"  wincmd p
+"  exec 'split '. a:candidates[0].action__path
+"endfunction
+"call unite#custom_action('file', 'my_split', my_action)
+"
+"let my_action = {'is_selectable' : 1}
+"function! my_action.func(candidates)
+"  wincmd p
+"  exec 'vsplit '. a:candidates[0].action__path
+"endfunction
+"call unite#custom_action('file', 'my_vsplit', my_action)
+"" }}}
+
 filetype plugin indent on
 NeoBundleCheck
-" for golang {{{
-set path+=$GOPATH/src/**
-let g:gofmt_command = 'goimports'
-"au BufWritePre *.go Fmt
-au BufNewFile,BufRead *.go set sw=4 noexpandtab ts=4 completeopt=menu,preview
-au FileType go compiler go
-" }}}
-
-" VimFilerTree {{{
-command! VimFilerTree call VimFilerTree()
-function VimFilerTree()
-  exec ':VimFiler -buffer-name=explorer -split -simple -winwidth=45 -toggle -no-quit'
-  wincmd t
-  setl winfixwidth
-endfunction
-autocmd! FileType vimfiler call g:my_vimfiler_settings()
-function! g:my_vimfiler_settings()
-  nmap     <buffer><expr><CR> vimfiler#smart_cursor_map("\<Plug>(vimfiler_expand_tree)", "\<Plug>(vimfiler_edit_file)")
-  nnoremap <buffer>s          :call vimfiler#mappings#do_action('my_split')<CR>
-  nnoremap <buffer>v          :call vimfiler#mappings#do_action('my_vsplit')<CR>
-endfunction
-
-let my_action = {'is_selectable' : 1}
-function! my_action.func(candidates)
-  wincmd p
-  exec 'split '. a:candidates[0].action__path
-endfunction
-call unite#custom_action('file', 'my_split', my_action)
-
-let my_action = {'is_selectable' : 1}
-function! my_action.func(candidates)
-  wincmd p
-  exec 'vsplit '. a:candidates[0].action__path
-endfunction
-call unite#custom_action('file', 'my_vsplit', my_action)
-" }}}
+let g:vim_json_syntax_conceal = 0
