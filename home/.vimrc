@@ -14,6 +14,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 NeoBundle 'elzr/vim-json'
 NeoBundle 'msanders/snipmate.vim'
 NeoBundle 'kchmck/vim-coffee-script'
+NeoBundle 'evidens/vim-twig'
 "NeoBundle 'Shougo/unite.vim'
 NeoBundleLazy 'lambdalisue/vim-gista', {
     \ 'depends': [
